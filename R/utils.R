@@ -28,27 +28,27 @@ approx_int_solution <- function(nt, nc, kt, kc, coef, cplex_control=list()){
   }
   b2 <- rep(kt, nt)
   s2 <- rep("L", nt)
-  
+
   a3 <- matrix(0, nc, nt*nc)
   for (i in 1:nc){
     a3[i, cloc(i)] <- 1
   }
   b3 <- rep(kc, nc)
   s3 <- rep("L", nc)
-  
+
   Amat <- rbind(a2, a3)
   bvec <- c( b2, b3)
   sense <- c(s2, s3)
   cvec <- coef
   ub <- Inf
   vtype <- rep("B", nt*nc)
-  
-  Rcplex2::Rcplex(cvec, Amat, bvec, sense=sense, ub=ub,
+
+  Rcplex::Rcplex(cvec, Amat, bvec, sense=sense, ub=ub,
                     objsense='max', vtype = vtype, control=cplex_control)
 }
 
 approx_int_solution2 <- function(args, coef, cplex_control=list()){
-  Rcplex2::Rcplex(Amat=args$Amat,
+  Rcplex::Rcplex(Amat=args$Amat,
                         bvec=args$bvec, cvec=coef, ub=args$ub,
                         vtype = "B", n=1, sense=args$sense,
                         objsense='max', control = cplex_control)

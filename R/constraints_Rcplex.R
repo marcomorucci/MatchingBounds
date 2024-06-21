@@ -1,4 +1,4 @@
-constraint_caliper = function(dist_matrix, caliper){
+constraint_caliper <- function(dist_matrix, caliper){
   if(is.null(dim(caliper))){
     add_constraint_caliper = function(D){
       dmat = dist_matrix[D==1, D==0]
@@ -15,7 +15,7 @@ constraint_caliper = function(dist_matrix, caliper){
   add_constraint_caliper
 }
 
-constraint_moment = function(X, m, mom, eps){
+constraint_moment <- function(X, m, mom, eps){
   add_constraint_moment = function(D){
     Xt = X[D==1, ]
     Xc = X[D==0, ]
@@ -41,15 +41,15 @@ constraint_moment = function(X, m, mom, eps){
   }
 }
 
-constraint_quantile = function(X, m, quantiles, eps){
-  
+constraint_quantile <- function(X, m, quantiles, eps){
+
   add_constraint_quantile = function(D){
     Xt = X[D==1, ]
     Xc = X[D==0, ]
     nt = nrow(Xt)
     nc = nrow(Xc)
     p = ncol(Xt)
-    
+
     a = matrix(0, sum(sapply(quantiles, length)), nt*nc)
     i = 1
     for (j in 1:p){
@@ -63,7 +63,7 @@ constraint_quantile = function(X, m, quantiles, eps){
     else
       b = unlist(eps)
     s = rep("L", sum(sapply(quantiles, length)))
-    
+
 
     Amat = rbind(a, -a)
     bvec = c(b, b)

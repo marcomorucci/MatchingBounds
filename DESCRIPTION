@@ -1,16 +1,22 @@
 Package: MatchingBounds
-Title: What the Package Does (One Line, Title Case)
+Title: A package for robustness of matching methods 
 Version: 0.0.0.9000
 Authors@R: 
-    person(given = "First",
-           family = "Last",
+    person(given = "Marco",
+           family = "Morucci",
            role = c("aut", "cre"),
-           email = "first.last@example.com",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to
-    pick a license
+           email = "marco.morucci@nyu.com",
+           comment = c(ORCID = "0000-0002-5707-0187"))
+Description: Implementation of Matching Bounds methodology to diagnose effectiveness of matching 
+              algorithms.
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
+Imports: 
+    Rcplex,
+    Rglpk
+Suggests: 
+    testthat (>= 2.0.0)
+Config/testthat/edition: 2
