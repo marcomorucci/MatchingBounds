@@ -18,7 +18,7 @@ gen_ploc <- function(nt, nc){
   }
 }
 
-approx_int_solution <- function(nt, nc, kt, kc, coef, cplex_control=list()){
+approx_int_solution <- function(nt, nc, kt, kc, t_strict, c_strict, coef, cplex_control=list()){
   tloc <- gen_tloc(nt, nc)
   cloc <- gen_cloc(nt, nc)
 
@@ -27,14 +27,20 @@ approx_int_solution <- function(nt, nc, kt, kc, coef, cplex_control=list()){
     a2[i, tloc(i)] <- 1
   }
   b2 <- rep(kt, nt)
-  s2 <- rep("L", nt)
+  if (!t_strict)
+    s2 <- rep("L", nt)
+  else
+    s2 <- rep("E", nt)
 
   a3 <- matrix(0, nc, nt*nc)
   for (i in 1:nc){
     a3[i, cloc(i)] <- 1
   }
   b3 <- rep(kc, nc)
-  s3 <- rep("L", nc)
+  if (!c_strict)
+    s3 <- rep("L", nc)
+  else
+    s3 <- rep("E", nc)
 
   Amat <- rbind(a2, a3)
   bvec <- c( b2, b3)

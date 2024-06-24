@@ -4,3 +4,5 @@
 .httr-oauth
 .DS_Store
 tests/
+README_cache/
+TODO
