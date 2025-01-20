@@ -65,7 +65,7 @@ tols <- c(age=0.76237006, educ=0.25748441,   black=0.01632017,
           re74=11.45281538, re75=265.14638896)
 
 
-constraints = list(mean=constraint_moment(lalonde[, cvars], M, 1, tols))
+constraints = list(mean=constraint_moment(lalonde[, cvars], lalonde$treat, M, 1, tols))
 ```
 
 Finally, we run the matching bounds algorithm. 
@@ -75,7 +75,7 @@ res <- matching_bounds(lalonde$re78, lalonde$treat, constraints,
                        M, Kt, Kc, approximate=TRUE,
                        include_upper = TRUE,
                        include_lower = TRUE, approx_type = 'fast', solver = 'CPLEX',
-                       solver_control = list(trace = 1, round = 1, tilim = 60*60),
+                       solver_control = list(trace = 0, round = 1, tilim = 60*60),
                        return_solver_out = TRUE)
 # If using GLPK 
 # res <- matching_bounds(lalonde$re78, lalonde$treat, constraints,
@@ -86,5 +86,29 @@ res <- matching_bounds(lalonde$re78, lalonde$treat, constraints,
 #                        return_solver_out = TRUE)
 ```
 
-The largest ATT that can be found among matches that satisfy the balance constraint is `r res$max_te_mb` and the smallest is `r res$min_te_mb`. 
+The largest ATT that can be found among matches that satisfy the balance constraint is `r round(res$max_te_mb, 2)` and the smallest is `r round(res$min_te_mb, 2)`. 
+
+
+We can also run MBs many times with progressively looser constraints using the progressive functions in the package. Here we run MBs six times total, each time relaxing the constraints on the means by 10% of its initial value. 
+```{r pMBs, cache=TRUE, message=FALSE}
+
+means <- progressive_constraint_moment(lalonde[, cvars], lalonde$treat, M, 1, tols,
+                                       rf_step=0.1, end_rf=0.6)
+
+progressive_constraints <- list(means=means)
+
+prog_res <- progressive_matching_bounds(lalonde$re78, lalonde$treat, progressive_constraints,
+                                   M, Kt, Kc, approximate=TRUE,
+                                   include_upper = TRUE,
+                                   include_lower = TRUE, approx_type = 'fast', solver = 'CPLEX',
+                                   solver_control = list(trace = 0, round = 1, tilim = 60*60),
+                                   return_solver_out = TRUE)
+
+```
+
+Results can be viewed as follows:
+```{r sum}
+summary(prog_res)
+```
+
 

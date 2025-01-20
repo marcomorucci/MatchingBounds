@@ -4,12 +4,14 @@
 \alias{constraint_caliper}
 \title{Define a distance caliper constraint}
 \usage{
-constraint_caliper(dist_matrix, caliper)
+constraint_caliper(dist_matrix, caliper, D = NULL)
 }
 \arguments{
-\item{dist_matrix}{a N x N matrix of distances between units.}
+\item{dist_matrix}{EITEHR a N x N matrix of distances between units. Or a Nt x Nc matrix of distances between treated and control units. If the former the the argument D must also be provided.}
 
 \item{caliper}{either: a Nt x Nc matrix of maximum allowed distances between treated and control units or a scalar denoting the max allowed distance between any pair of units.}
+
+\item{D}{binary treatment indicator vector if not left NULL, then dist_matrix is assumed to be NxN}
 }
 \value{
 A function to be used in conjunction with one of the MB computations

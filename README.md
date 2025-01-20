@@ -71,7 +71,7 @@ tols <- c(age=0.76237006, educ=0.25748441,   black=0.01632017,
           re74=11.45281538, re75=265.14638896)
 
 
-constraints = list(mean=constraint_moment(lalonde[, cvars], M, 1, tols))
+constraints = list(mean=constraint_moment(lalonde[, cvars], lalonde$treat, M, 1, tols))
 ```
 
 Finally, we run the matching bounds algorithm.
@@ -82,12 +82,8 @@ res <- matching_bounds(lalonde$re78, lalonde$treat, constraints,
                        M, Kt, Kc, approximate=TRUE,
                        include_upper = TRUE,
                        include_lower = TRUE, approx_type = 'fast', solver = 'CPLEX',
-                       solver_control = list(trace = 1, round = 1, tilim = 60*60),
+                       solver_control = list(trace = 0, round = 1, tilim = 60*60),
                        return_solver_out = TRUE)
-#> Rcplex: num variables=79365 num constraints=631
-#> Rcplex: num variables=79365 num constraints=614
-#> Rcplex: num variables=79365 num constraints=631
-#> Rcplex: num variables=79365 num constraints=614
 # If using GLPK 
 # res <- matching_bounds(lalonde$re78, lalonde$treat, constraints,
 #                        M, Kt, Kc, approximate=TRUE,
@@ -98,4 +94,44 @@ res <- matching_bounds(lalonde$re78, lalonde$treat, constraints,
 ```
 
 The largest ATT that can be found among matches that satisfy the balance
-constraint is 223.0978204 and the smallest is -81.1182258.
+constraint is 504.13 and the smallest is 73.32.
+
+We can also run MBs many times with progressively looser constraints
+using the progressive functions in the package. Here we run MBs six
+times total, each time relaxing the constraints on the means by 10% of
+its initial value.
+
+``` r
+
+means <- progressive_constraint_moment(lalonde[, cvars], lalonde$treat, M, 1, tols,
+                                       rf_step=0.1, end_rf=0.6)
+
+progressive_constraints <- list(means=means)
+
+prog_res <- progressive_matching_bounds(lalonde$re78, lalonde$treat, progressive_constraints,
+                                   M, Kt, Kc, approximate=TRUE,
+                                   include_upper = TRUE,
+                                   include_lower = TRUE, approx_type = 'fast', solver = 'CPLEX',
+                                   solver_control = list(trace = 0, round = 1, tilim = 60*60),
+                                   return_solver_out = TRUE)
+```
+
+Results can be viewed as follows:
+
+``` r
+summary(prog_res)
+#>      TE: UB     TE: LB N matched T: UB N matched C: UB N matched T: LB
+#> 1  504.1336   73.31937             126             126             121
+#> 2 1179.4261 1063.29831             124             124             121
+#> 3 1048.6568  816.14680             123             123             122
+#> 4 2150.7023  735.70870             121             121             121
+#> 5  821.4618 -477.00164             123             123             125
+#> 6 1105.3041   17.96618             122             122             123
+#>   N matched C: LB means RF
+#> 1             121      0.0
+#> 2             121      0.1
+#> 3             122      0.2
+#> 4             121      0.3
+#> 5             125      0.4
+#> 6             123      0.5
+```

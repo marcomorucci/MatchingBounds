@@ -4,10 +4,12 @@
 \alias{constraint_quantile}
 \title{Defines a quantile distance constraint}
 \usage{
-constraint_quantile(X, m, quantiles, eps)
+constraint_quantile(X, D, m, quantiles, eps)
 }
 \arguments{
 \item{X}{matrix of matching covariates.}
+
+\item{D}{Binary treatment indicator vector}
 
 \item{m}{Integer. total number of matches to be made.}
 

@@ -4,10 +4,12 @@
 \alias{constraint_moment}
 \title{Defines a moment distance constraint}
 \usage{
-constraint_moment(X, m, mom, eps)
+constraint_moment(X, D, m, mom, eps)
 }
 \arguments{
 \item{X}{matrix of matching covariates.}
+
+\item{D}{Binary treatment indicator vector}
 
 \item{m}{Integer. total number of matches to be made.}
 
